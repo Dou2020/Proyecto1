@@ -1,0 +1,33 @@
+fieldset {
+    align-content: center;
+    margin-left: 35%;
+    margin-top: 3%;
+    width: 30%;
+    background: #9dd2c2;
+    border-radius: 10px;
+}
+h1{
+    text-align: center;
+    margin-top: 12%;
+}
+table{
+    width: 100%;
+}
+td , tr{
+    padding: 8px;
+}
+.ingreso{
+    margin: 45px;
+   text-align: right ;
+   border-collapse: collapse;
+}
+#boton {
+   text-align: center;
+}
+#en {
+    width: 40%;
+}
+#mensaje {
+    text-align: center;
+    background-color: tomato;
+}
