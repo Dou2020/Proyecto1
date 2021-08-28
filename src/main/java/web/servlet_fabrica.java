@@ -32,6 +32,9 @@ public class servlet_fabrica extends HttpServlet {
                     case "salir":
                         estado = util.accionDefault(request,response);
                         break;
+                    case "editar":
+                        this.pestanaEditarPieza(request, response);
+                        break;
                     default:
                         accionDefaul(request,response,true);
                         break;
@@ -59,12 +62,16 @@ public class servlet_fabrica extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         String accion = (String) request.getParameter("accion");
+        boolean esta = false;
         if (accion != null && estado) {
             switch(accion){
                 case"buscar":
                     break;
                 case "ingresar":
-                    ingresarPieza(request,response);
+                    this.ingresarPieza(request,response,esta);
+                    break;
+                case "modificar":
+                    this.editarPieza(request, response);
                     break;
                 default:
                     estado = util.accionDefault(request,response);
@@ -74,7 +81,40 @@ public class servlet_fabrica extends HttpServlet {
             estado = util.accionDefault(request,response);
         }
     }
-    private void ingresarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+    private void editarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String idPieza = request.getParameter("idPieza");
+        String nombre = request.getParameter("nombre");
+        String costo = request.getParameter("saldo");
+        if (this.evaluar(nombre) && this.evaluar(idPieza) && this.evaluar(costo)) {
+            if (isNumeric(costo)) {
+                double cost = Double.parseDouble(costo);
+                if (usu.encontrarPieza(nombre) == null) {
+                    usu.insertarPieza(nombre);
+                }else{
+                    nombre = usu.encontrarPieza(nombre);
+                }
+                Pieza pieza = new Pieza(nombre,cost);
+                int rows = usu.modificarPrecio(pieza);
+                this.accionDefaul(request, response,false);
+                util.alerta(request, response,"Se Modifico la pieza "+rows+" "+pieza.getNombre(),"fabrica.jsp?opcion=2");
+            }
+        }
+    }
+    private void pestanaEditarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String idPieza = request.getParameter("idPieza");
+        if (isNumeric(idPieza)) {
+            int id = Integer.parseInt(idPieza);
+            Pieza pieza = usu.encontrarPrecio(id);
+            HttpSession session = request.getSession();
+            session.setAttribute("pieza", pieza);
+            String url = "/WEB-INF/paginas/Fabrica/editarPieza.jsp";
+            request.getRequestDispatcher(url).forward(request, response);
+        }else{
+            this.accionDefaul(request, response,true);
+        }
+        
+    }
+    private void ingresarPieza(HttpServletRequest request, HttpServletResponse response,boolean esta) throws ServletException, IOException{
         String pieza = request.getParameter("pieza");
         String precio = request.getParameter("precio");
         String tipo = request.getParameter("cantidad");
@@ -102,7 +142,7 @@ public class servlet_fabrica extends HttpServlet {
                         }
                         if (es) {
                             System.out.println("Ingreso la pieza "+pieza);
-                            accionDefaul(request,response, false);
+                            accionDefaul(request,response, esta);
                             util.alerta(request, response, "Ingreso la pieza"+pieza+" "+tipo, "fabrica.jsp");
                             
                         }
@@ -115,7 +155,7 @@ public class servlet_fabrica extends HttpServlet {
             System.out.println("no se ingreso");
             util.alerta(request, response, "No se ingreso el usuario", "fabrica.jsp");
         }
-        accionDefaul(request,response,true);
+        accionDefaul(request,response,esta);
     }
     public static boolean isNumeric(String str) {//expresiones regulares
         return str != null && str.matches("[-+]?\\d*\\.?\\d+");

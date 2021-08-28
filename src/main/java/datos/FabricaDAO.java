@@ -158,6 +158,25 @@ public class FabricaDAO {
         }
         return rows;
     }
+    public int modificarPrecio(Pieza pieza){
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int rows = 0;
+        try {
+            conn = conexion.getConnection();
+            stmt = conn.prepareStatement(SQL_UPDATE_PRECIO);
+            stmt.setDouble(1, pieza.getCosto());
+            stmt.setString(2, pieza.getNombre());
+            stmt.setInt(3, pieza.getId());
+            rows = stmt.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            close(stmt);
+            close(conn);
+        }
+        return rows;
+    }
     
     
 }
