@@ -14,7 +14,7 @@ import java.util.List;
 public class servlet_fabrica extends HttpServlet {
     private static boolean estado = false;
     Utilidades util = new Utilidades();
-    FabricaDAO usu = new FabricaDAO();
+    private FabricaDAO usu = new FabricaDAO();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
@@ -35,6 +35,8 @@ public class servlet_fabrica extends HttpServlet {
                     case "editar":
                         this.pestanaEditarPieza(request, response);
                         break;
+                    case "eliminar":
+                        this.eliminarPieza(request, response);
                     default:
                         accionDefaul(request,response,true);
                         break;
@@ -86,19 +88,34 @@ public class servlet_fabrica extends HttpServlet {
         String nombre = request.getParameter("nombre");
         String costo = request.getParameter("saldo");
         if (this.evaluar(nombre) && this.evaluar(idPieza) && this.evaluar(costo)) {
-            if (isNumeric(costo)) {
+            if (isNumeric(costo) && isNumeric(idPieza)) {
                 double cost = Double.parseDouble(costo);
+                int id = Integer.parseInt(idPieza);
                 if (usu.encontrarPieza(nombre) == null) {
                     usu.insertarPieza(nombre);
                 }else{
                     nombre = usu.encontrarPieza(nombre);
                 }
-                Pieza pieza = new Pieza(nombre,cost);
+                Pieza pieza = new Pieza(nombre,cost,id);
+                System.out.println(pieza);
                 int rows = usu.modificarPrecio(pieza);
                 this.accionDefaul(request, response,false);
                 util.alerta(request, response,"Se Modifico la pieza "+rows+" "+pieza.getNombre(),"fabrica.jsp?opcion=2");
             }
         }
+    }
+    private void eliminarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+            String idPieza = request.getParameter("idPieza");
+            if (evaluar(idPieza)) {
+                if (isNumeric(idPieza)) {
+                    int id = Integer.parseInt(idPieza);
+                    int rows = usu.eliminarPrecio(id);
+                    this.accionDefaul(request, response,false);
+                    util.alerta(request, response,"Se elimino la pieza con id "+id,"fabrica.jsp?opcion=2");
+                }
+            }else{
+                util.alerta(request, response,"no se ingreso el id correctamente", "fabrica.jsp?opcion=2");
+            }
     }
     private void pestanaEditarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         String idPieza = request.getParameter("idPieza");

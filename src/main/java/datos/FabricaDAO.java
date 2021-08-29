@@ -17,7 +17,7 @@ public class FabricaDAO {
     private static final String SQL_INSERT_PIEZA = "INSERT INTO Pieza(nombre)VALUES (?)";
     private static final String SQL_INSERT_PRECIO = "INSERT INTO Precio(costo,nombre_pieza)VALUES (?,?)";
     
-    private static final String SQL_UPDATE_PRECIO = "UPDATE Precio SET costo = ? nombre_pieza = ? WHERE id = ?";
+    private static final String SQL_UPDATE_PRECIO = "UPDATE Precio SET costo = ?, nombre_pieza = ? WHERE id = ?";
     private static final String SQL_UPDATE_PIEZA = "UPDATE Pieza SET nombre = ? WHERE nombre = ?";
     private static final String SQL_DELETE_PRECIO = "DELETE FROM Precio WHERE id = ?";
     
@@ -168,6 +168,23 @@ public class FabricaDAO {
             stmt.setDouble(1, pieza.getCosto());
             stmt.setString(2, pieza.getNombre());
             stmt.setInt(3, pieza.getId());
+            rows = stmt.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            close(stmt);
+            close(conn);
+        }
+        return rows;
+    }
+    public int eliminarPrecio(int id){
+        int rows =0;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = conexion.getConnection();
+            stmt = conn.prepareStatement(SQL_DELETE_PRECIO);
+            stmt.setInt(1, id);
             rows = stmt.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
