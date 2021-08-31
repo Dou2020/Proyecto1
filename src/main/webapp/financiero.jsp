@@ -19,21 +19,18 @@
         <jsp:include page="/WEB-INF/paginas/comunes/borrarCache.jsp"/>
     </head>
     <body>
-        <table class="titulo">
-            <tr>
-                <td id="pagina"><h1 ><i class="fas fa-chart-pie"></i> Financiero</h1></td>
-                <td id="nombre"><h2>Usuario: <%= session.getAttribute("nombre")%></h2></td>
-                <td id="boton"> <a class="cerrar" href="${pageContext.request.contextPath}/servletFinanciero?accion=salir">Salir Sesion</a> </td>
-            </tr>
-        </table>
+        <jsp:include page="/WEB-INF/paginas/Usuario/cabeceroFinanciero.jsp"/>
             <div>
                 <table>
                     <tr>
                         <td>
-                            <jsp:include page="/WEB-INF/paginas/comunes/nuevoMueble.jsp"/>
+                            <jsp:include page="/WEB-INF/paginas/Usuario/nuevoMueble.jsp"/>
                         </td>
                         <td>
-                            <jsp:include page="/WEB-INF/paginas/comunes/nuevoUsuario.jsp"/>
+                            <jsp:include page="/WEB-INF/paginas/Usuario/nuevoUsuario.jsp"/>
+                        </td>
+                        <td>
+                            <jsp:include page="WEB-INF/paginas/Usuario/botonSubirArchivo.jsp"/>
                         </td>
                     </tr>
                 </table>

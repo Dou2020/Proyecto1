@@ -3,17 +3,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%! String opcions;%>
-<%
-    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+<jsp:include page="WEB-INF/paginas/Fabrica/autenticacion.jsp"/>
 
-    opcions = request.getParameter("opcion");
-
-    if (session.getAttribute("nombre") == null || session.getAttribute("keys") == null) {
-        response.sendRedirect("inicio.jsp");
-    } else if (!"2222".equals(session.getAttribute("keys"))) {
-        response.sendRedirect("inicio.jsp");
-    }
-%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
     <head>
@@ -24,21 +15,28 @@
     </head>
     <body>
         <jsp:include page="WEB-INF/paginas/Fabrica/cabecero.jsp"/>
-        <c:set var="op" value="${opcions}"/>
-        <c:out value="${op}" />
-        <c:if test="${op == 1}" >
-
-        </c:if>
-        <c:if test="${opcion == '2'}" var="opcion" scope="request" >
-
-            <jsp:include page="WEB-INF/paginas/Fabrica/nuevaPieza.jsp"/>
-
-            <jsp:include page="WEB-INF/paginas/Fabrica/listadoPieza.jsp"/>
-
-        </c:if>
-        <c:if test="${opcions}==3">
-
-        </c:if>
+        
+        <% 
+        opcions = request.getParameter("opcion");
+        System.out.println(opcions);
+        if (opcions != null) {
+                
+            switch (opcions) {
+            case "2": %>
+                <jsp:include page="WEB-INF/paginas/Fabrica/nuevaPieza.jsp"/>
+                <jsp:include page="WEB-INF/paginas/Fabrica/listadoPieza.jsp"/>
+        
+                <%break;
+            case "3":%>
+        
+        
+                <%break;
+            default:%>
+            <jsp:include page="WEB-INF/paginas/Fabrica/listadoEnumerarPieza.jsp"/>
+                <%break;
+            }
+        }
+                %>
 
         <jsp:include page="/WEB-INF/paginas/comunes/boostrap.jsp"/>
     </body>

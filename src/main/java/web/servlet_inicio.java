@@ -85,7 +85,7 @@ public class servlet_inicio extends HttpServlet {
                 break;
         }
         
-        response.sendRedirect("inicio.jsp");
+        //response.sendRedirect("inicio.jsp");
         //este metodo es estatico y solo redireccioa a la pagina no cambi la url
         //request.getRequestDispatcher("clientes.jsp").forward(request, response);
     }

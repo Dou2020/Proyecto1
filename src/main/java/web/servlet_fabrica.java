@@ -9,12 +9,14 @@ import javax.servlet.http.*;
 import datos.Utilidades;
 import domain.Pieza;
 import java.util.List;
+import web.fabrica.interaccionPieza;
 
 @WebServlet("/servlet-Fabrica")
 public class servlet_fabrica extends HttpServlet {
     private static boolean estado = false;
     Utilidades util = new Utilidades();
     private FabricaDAO usu = new FabricaDAO();
+    interaccionPieza inter = new interaccionPieza();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
@@ -50,11 +52,14 @@ public class servlet_fabrica extends HttpServlet {
     }
         
     private void accionDefaul(HttpServletRequest request, HttpServletResponse response, boolean esta) throws IOException, ServletException{
-        List<Pieza> piezas = usu.listaPrecio();
-        System.out.println("piezas= "+piezas);
-        
+        List<Pieza> pieza = usu.listaPrecio();
+        List<Pieza> piezas = usu.listaPieza();
+        inter.contarPieza(piezas,pieza);
+        System.out.println("1.piezas= "+pieza);
+        System.out.println("2. piezas= "+piezas);
         HttpSession sesion = request.getSession();
-        sesion.setAttribute("piezas", piezas);
+        sesion.setAttribute("piezas", pieza);
+        sesion.setAttribute("piezass", piezas);
         if (esta) {
             System.out.println("ingreso a fabrica "+ esta);
             response.sendRedirect("fabrica.jsp");
