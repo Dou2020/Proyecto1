@@ -29,7 +29,7 @@
                                            class="btn btn-secondary">
                                             <i class="fas fa-angle-double-right"></i>Editar
                                         </a>
-                                           <a href="${pageContext.request.contextPath}/servlet-Fabrica?accion=eliminar&idPieza=${pieza.id}"
+                                        <a href="${pageContext.request.contextPath}/servlet-Fabrica?accion=eliminar&idPieza=${pieza.id}"
                                            class="btn btn-danger">
                                             <i class="fas fa-times-circle"></i> Eliminar
                                         </a>
@@ -44,5 +44,4 @@
         </div>
     </div>
 </section>
-    
-            
+

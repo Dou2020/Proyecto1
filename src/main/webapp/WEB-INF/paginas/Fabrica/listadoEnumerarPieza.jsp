@@ -1,3 +1,5 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <section id="cliente">
     <div class="container">
         <div class="row">
@@ -14,20 +16,22 @@
                                 <th>Estado</th>
                             </tr>
                         <tbody>
-                            <c:forEach var="piez" items="${piezass}">
+                            <c:forEach var="p" items="${cantidadPieza}">
                                 <tr>
-                                    <td>${piez.nombre}</td>
-                                    <td>${piez.cantidad}</td>
-                                    <td>${piez.estado}</td>
+                                    <td>${p.nombre}</td>
+                                    <td>${p.cantidad}</td>
+                                    <td>${p.estado}</td>
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/servlet-Fabrica?accion=editar"
+                                        <a href="${pageContext.request.contextPath}/servlet-Fabrica?accion=editarPiezas&nombrePiezas=${p.nombre}"
                                            class="btn btn-secondary">
                                             <i class="fas fa-angle-double-right"></i>Editar
                                         </a>
-                                           <a href="${pageContext.request.contextPath}/servlet-Fabrica?accion=eliminar"
-                                           class="btn btn-danger">
-                                            <i class="fas fa-times-circle"></i> Eliminar
-                                        </a>
+                                        <c:if test="${p.cantidad == 0}">
+                                            <a href="${pageContext.request.contextPath}/servlet-Fabrica?accion=eliminarPiezas&nombrePiezas=${p.nombre}"
+                                               class="btn btn-danger">
+                                                <i class="fas fa-times-circle"></i> Eliminar
+                                            </a>
+                                        </c:if>
                                     </td>
                                 </tr>
                             </c:forEach>

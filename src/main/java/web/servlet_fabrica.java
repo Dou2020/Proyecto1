@@ -39,6 +39,10 @@ public class servlet_fabrica extends HttpServlet {
                         break;
                     case "eliminar":
                         this.eliminarPieza(request, response);
+                        break;
+                    case "ordenar":
+                        accionDefaul(request,response,true);
+                        break;
                     default:
                         accionDefaul(request,response,true);
                         break;
@@ -55,11 +59,20 @@ public class servlet_fabrica extends HttpServlet {
         List<Pieza> pieza = usu.listaPrecio();
         List<Pieza> piezas = usu.listaPieza();
         inter.contarPieza(piezas,pieza);
+        String orden = request.getParameter("forma");
+        if (orden != null) {
+            if (orden.equals("1")) {
+               inter.ordenarPieza(piezas,true);
+            }
+            if (orden.equals("2")) {
+                inter.ordenarPieza(piezas,false);
+            }
+        }
         System.out.println("1.piezas= "+pieza);
         System.out.println("2. piezas= "+piezas);
         HttpSession sesion = request.getSession();
         sesion.setAttribute("piezas", pieza);
-        sesion.setAttribute("piezass", piezas);
+        sesion.setAttribute("cantidadPieza", piezas);
         if (esta) {
             System.out.println("ingreso a fabrica "+ esta);
             response.sendRedirect("fabrica.jsp");

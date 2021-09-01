@@ -1,5 +1,3 @@
-
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%! String opcions;%>
@@ -32,11 +30,14 @@
         
                 <%break;
             default:%>
+            <jsp:include page="WEB-INF/paginas/Fabrica/botonesOrdenar.jsp"/>
             <jsp:include page="WEB-INF/paginas/Fabrica/listadoEnumerarPieza.jsp"/>
                 <%break;
             }
-        }
-                %>
+        }else{%>
+            <jsp:include page="WEB-INF/paginas/Fabrica/botonesOrdenar.jsp"/>
+            <jsp:include page="WEB-INF/paginas/Fabrica/listadoEnumerarPieza.jsp"/>
+        <% } %>
 
         <jsp:include page="/WEB-INF/paginas/comunes/boostrap.jsp"/>
     </body>
