@@ -1,23 +1,20 @@
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal2">
-    Registrar nuevo Usuario
-</button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Registrar nuevo Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="${pageContext.request.contextPath}/servlet-Financiero?accion=ingresar"  method="POST" class="was-validated">
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Editar Usuario</title>
+        <link rel="stylesheet" href="recursos/estilo_financiero.css">
+    </head>
+    <body>
+        <jsp:include page="/WEB-INF/paginas/Fabrica/cabecero.jsp"/>
+        <form action="${pageContext.request.contextPath}/servlet-Financiero?accion=ingresar"  method="POST" class="was-validated">
                     <table>
 
                         <tr>
                             <td>Usuario:</td>
-                            <td><input type="text" name="usuario" required></td>
+                            <td><input type="text" name="usuario" required value=""></td>
                         </tr>
                         <tr>
                             <td>Tipo</td>
@@ -37,12 +34,12 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Nueva Contraseña</td>
+                            <td>Nueva ContraseÃ±a</td>
                             <td><input type="password" name="password" required></td>
                         </tr>
 
                         <tr>
-                            <td>Confirmar contraseña</td>
+                            <td>Confirmar contraseÃ±a</td>
                             <td><input type="password" name="password2" required></td>
                         </tr>
                         <tr>
@@ -59,7 +56,6 @@
                         </tr>
                     </table>
                 </form>
-            </div>
-        </div>
-    </div>
-</div>
+                                    <jsp:include page="/WEB-INF/paginas/comunes/boostrap.jsp"/>
+    </body>
+</html>

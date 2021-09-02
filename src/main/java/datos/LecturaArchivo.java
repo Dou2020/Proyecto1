@@ -10,7 +10,7 @@ import javax.servlet.http.*;
 
 
 @WebServlet("/lectura-archivo")
-@MultipartConfig
+@MultipartConfig(location="/tmp")// localizacion del archivo que se va a guardar temporalmente
 public class LecturaArchivo extends HttpServlet{
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
@@ -19,9 +19,8 @@ public class LecturaArchivo extends HttpServlet{
         Part filePart = request.getPart("file"); // Retrieves <input type="file" name="file">
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
         int longitud = (int) filePart.getSize();
-        System.out.println(fileName+" tamaño de archivo: "+longitud);
+        System.out.println(fileName+" tamaño de archivo: "+longitud+" "+filePart.getSubmittedFileName());
         InputStream fileContent = filePart.getInputStream();
-        
         byte[] total = new byte[longitud+1];
         
         int leidos = 0;

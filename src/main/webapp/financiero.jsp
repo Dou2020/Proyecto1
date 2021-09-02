@@ -15,6 +15,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="recursos/estilo_financiero.css">
+        <script type="text/javascript" src="recursos/funciones_financiero.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <title>Financiero</title>
         <jsp:include page="/WEB-INF/paginas/comunes/borrarCache.jsp"/>
     </head>
@@ -35,6 +37,7 @@
                     </tr>
                 </table>
             </div>
+                            <jsp:include page="WEB-INF/paginas/Usuario/listarUsuario.jsp"/>
                             <jsp:include page="/WEB-INF/paginas/comunes/boostrap.jsp"/>
     </body>
 </html>

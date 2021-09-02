@@ -48,4 +48,37 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
+function modificarUser(context, id, estado) {
+    $.ajax({
+        type: 'GET',
+        url: context + "/servlet-Financiero?accion=modificarUser&idUser="+id+"&estado="+estado,
+        success: function () {
+            document.getElementById(id).innerHTML = !estado ;
+            alert("Se modifico estado del usuario: "+id +" a estado: "+!estado);
+        }
+    }).fail(function () {
+        alert("error");
+    });
+}
+function modificarUsuario(context, id, estado) {
+    $.ajax({
+        type: 'GET',
+        url: context + "/servlet-Financiero?accion=modificarUser&idUser="+id+"&estado="+estado,
+        success: function () {
+            document.getElementById(id).innerHTML = !estado ;
+            alert("Se modifico estado del usuario: "+id +" a estado: "+!estado);
+        }
+    }).fail(function () {
+        alert("error");
+    });
+}
+function insertarPieza() {
+  var txt1 = "<b>I </b>";           // Create element with HTML
+  var txt2 = $("<i></i>").text("love ");  // Create with jQuery
+  var txt3 = document.createElement("b");   // Create with DOM
+  txt3.innerHTML = "jQuery!";
+  $("img").after(txt1, txt2, txt3);    // Insert new elements after img
+  $("").before();
+}
+
 

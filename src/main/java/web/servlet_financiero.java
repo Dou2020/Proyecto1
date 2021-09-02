@@ -8,8 +8,10 @@ import javax.servlet.http.*;
 import datos.UsuarioDAO;
 import datos.Utilidades;
 import domain.Usuario;
+import java.util.List;
 
-@WebServlet("/servletFinanciero")
+
+@WebServlet("/servlet-Financiero")
 public class servlet_financiero extends HttpServlet {
     private static boolean estado = false;
     UsuarioDAO usu = new UsuarioDAO();
@@ -28,23 +30,38 @@ public class servlet_financiero extends HttpServlet {
             String accion = (String) request.getParameter("accion");
             if (accion != null) {
                 switch(accion){
+                    case "editarUsuario":
+                        
+                        break;
+                    case "eliminarUsuario":
+                        this.eliminarUsuario(request, response);
+                        break;
+                    case "modificarUser":
+                        this.modificarUsuario(request, response);
+                        break;
                     case "salir":
                         estado = util.accionDefault(request,response);
                         break;
                     default:
-                        accionDefaul(request,response);
+                        accionDefaul(request,response,true);
                         break;
                 }
             }else{
-                accionDefaul(request,response);
+                accionDefaul(request,response,true);
             }
         }else{
             estado = util.accionDefault(request, response);
         }
     }
         
-    private void accionDefaul(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
-        response.sendRedirect("financiero.jsp");
+    private void accionDefaul(HttpServletRequest request, HttpServletResponse response, boolean esta) throws IOException, ServletException{
+        List<Usuario>  usuarios = usu.lista();
+        HttpSession session = request.getSession();
+        session.setAttribute("usuarios", usuarios);
+        if (esta) {
+            System.out.println("ingreso al accion defaul");
+                response.sendRedirect("financiero.jsp");
+        }
     }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
@@ -64,6 +81,32 @@ public class servlet_financiero extends HttpServlet {
             estado = util.accionDefault(request,response);
         }
     }
+    private void eliminarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String usuario = request.getParameter("nombreUsuario");
+        if (evaluar(usuario)) {
+            int esta = usu.eliminar(new Usuario(usuario));
+            System.out.print("eliminado "+esta);
+            this.accionDefaul(request, response,true);
+        }else{
+            System.out.print("error");
+            this.accionDefaul(request, response, true);   
+        }
+    }
+    private void editarUsuario (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        
+    }
+    private void modificarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String usuario = request.getParameter("idUser");
+        String estado = request.getParameter("estado");
+        boolean estados = false;
+        if (evaluar(estado)) {
+            if (estado.equals("true")) {estados = true;}
+            System.out.println("usuario: "+usuario+" estatus: "+ estado);
+            usu.actualizarEstado(new Usuario(usuario,!estados));
+        }
+       
+        this.accionDefaul(request, response, true);
+    }
     private void ingresarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         String usuario = request.getParameter("usuario");
         String password = request.getParameter("password");
@@ -71,7 +114,7 @@ public class servlet_financiero extends HttpServlet {
         String estad = request.getParameter("estado");
         String tipo = request.getParameter("tipo");
         boolean estado = false;
-        if (estad.equals("true")) {
+        if (estad != null && estad.equals("true")) {
             estado = true;
         }
         if (evaluar(usuario) && evaluar(password) && evaluar(password2) && evaluar(tipo)) {
@@ -99,7 +142,7 @@ public class servlet_financiero extends HttpServlet {
             System.out.println("no se ingreso");
             util.alerta(request, response, "No se ingreso el usuario", "financiero.jsp");
         }
-        accionDefaul(request,response);
+        accionDefaul(request,response,false);
     }
     public static boolean isNumeric(String str) {//expresiones regulares
         return str != null && str.matches("[-+]?\\d*\\.?\\d+");

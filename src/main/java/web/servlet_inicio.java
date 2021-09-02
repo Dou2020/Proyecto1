@@ -39,11 +39,11 @@ public class servlet_inicio extends HttpServlet {
             int a = validar(nombre,password); 
             switch (a) {
                 case 1:
-                    usuarioInteraccion.alerta(request,response,"Bienvenido al area Fincanciera: "+nombre,"financiero.jsp");
+                    usuarioInteraccion.alerta(request,response,"Bienvenido al area Fincanciera: "+nombre,"/proyecto1/servlet-Financiero");
                     Puestos(request,response,nombre,"1111");
                     break;
                 case 2:
-                    usuarioInteraccion.alerta(request,response,"Bienvenido al area Ventas: "+nombre,"ventas.jsp");
+                    usuarioInteraccion.alerta(request,response,"Bienvenido al area Ventas: "+nombre,"/proyecto1/servlet-Financiero");
                     Puestos(request,response,nombre,"3333");
                     break;
                 case 3:
