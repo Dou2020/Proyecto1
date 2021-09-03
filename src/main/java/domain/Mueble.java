@@ -11,12 +11,12 @@ package domain;
  */
 public class Mueble {
     private String nombre;
-    private float precio;
+    private double precio;
 
     public Mueble() {
     }
 
-    public Mueble(String nombre, float precio) {
+    public Mueble(String nombre, double precio) {
         this.nombre = nombre;
         this.precio = precio;
     }
@@ -29,12 +29,16 @@ public class Mueble {
         this.nombre = nombre;
     }
 
-    public float getPrecio() {
+    public double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(float precio) {
+    public void setPrecio(double precio) {
         this.precio = precio;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Mueble{" + "nombre=" + nombre + ", precio=" + precio + '}';
+    }
 }

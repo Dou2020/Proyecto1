@@ -1,7 +1,15 @@
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal2">
-    Registrar nuevo Usuario
-</button>
+<section id="actions" class="py-4 mb-4 bg-light">
+    <div class="container" >
+        <div class="row">
+            <div class="col-md-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                    Registrar nuevo Usuario
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -2,6 +2,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<%! String opcions;%>
 <% 
     response.setHeader("Cache-Control","no-cache, no-store, must-revalidate");
     
@@ -22,22 +23,29 @@
     </head>
     <body>
         <jsp:include page="/WEB-INF/paginas/Usuario/cabeceroFinanciero.jsp"/>
-            <div>
-                <table>
-                    <tr>
-                        <td>
-                            <jsp:include page="/WEB-INF/paginas/Usuario/nuevoMueble.jsp"/>
-                        </td>
-                        <td>
-                            <jsp:include page="/WEB-INF/paginas/Usuario/nuevoUsuario.jsp"/>
-                        </td>
-                        <td>
-                            <jsp:include page="WEB-INF/paginas/Usuario/botonSubirArchivo.jsp"/>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-                            <jsp:include page="WEB-INF/paginas/Usuario/listarUsuario.jsp"/>
+        <% 
+        opcions = request.getParameter("opcion");
+        System.out.println(opcions);
+        if (opcions != null) {
+                
+            switch (opcions) {
+            case "2": %>
+                <jsp:include page="/WEB-INF/paginas/Usuario/nuevoUsuario.jsp"/>
+                <jsp:include page="WEB-INF/paginas/Usuario/listarUsuario.jsp"/>
+        
+                <%break;
+            case "3":%>
+                <jsp:include page="/WEB-INF/paginas/Usuario/nuevoMueble.jsp"/>
+                <jsp:include page="WEB-INF/paginas/Usuario/listarMueble.jsp"/>
+
+                <%break;
+            default:%>
+            <jsp:include page="WEB-INF/paginas/Usuario/botonSubirArchivo.jsp"/>
+                <%break;
+            }
+        }else{%>
+            <jsp:include page="WEB-INF/paginas/Usuario/botonSubirArchivo.jsp"/>
+        <% } %>
                             <jsp:include page="/WEB-INF/paginas/comunes/boostrap.jsp"/>
     </body>
 </html>

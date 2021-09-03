@@ -60,7 +60,7 @@ function modificarUser(context, id, estado) {
         alert("error");
     });
 }
-function modificarUsuario(context, id, estado) {
+function modificarUsuario(context, id) {
     $.ajax({
         type: 'GET',
         url: context + "/servlet-Financiero?accion=modificarUser&idUser="+id+"&estado="+estado,
@@ -73,12 +73,41 @@ function modificarUsuario(context, id, estado) {
     });
 }
 function insertarPieza() {
-  var txt1 = "<b>I </b>";           // Create element with HTML
-  var txt2 = $("<i></i>").text("love ");  // Create with jQuery
-  var txt3 = document.createElement("b");   // Create with DOM
-  txt3.innerHTML = "jQuery!";
-  $("img").after(txt1, txt2, txt3);    // Insert new elements after img
-  $("").before();
+  var nFilas = $("#mi-tabla tr").length;
+  var nombre = $("#piezaNueva").val();
+  var cantidad = $("#cantidadNueva").val();
+  var valores1 = '<input value="'+nombre+'" name="pieza'+nFilas+'" aria-label="readonly input example" readonly >';
+  var txt1 = '<td>'+valores1+'</td>';
+  var valores2 ='<input value="'+cantidad+'" name="numero'+nFilas+'" aria-label="readonly input example" readonly>';
+  var txt3 = '<td>'+valores2+'</td>';
+  var txt2 = '<tr>'+txt1+txt3+'</tr>';           // Create element with HTML
+  //var txt2 = $("<i></i>").text("love ");  // Create with jQuery
+  //var txt3 = document.createElement("b");   // Create with DOM
+ // txt3.innerHTML = "jQuery!";
+    if (nombre !== null && nombre !== "") {
+        if (cantidad !==null && cantidad !== "") {
+            $("#insertando").after(txt2);    // Insert new elements after img 
+            $("#piezaNueva").val("");
+            $("#cantidadNueva").val("");
+        }  
+    }
 }
+
+function openDetailsModal(context) {
+    $.ajax({
+        type: 'GET',
+        url: context + "/servlet-Financiero?accion=verPieza",
+        success: function (result) {
+            $('#modal-content').html(result);
+            $('#myModal').modal('show');
+        }
+    }).fail(function ( jqXHR, textStatus, errorThrown) {
+        alert("error");
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
 
 

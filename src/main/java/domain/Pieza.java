@@ -23,6 +23,11 @@ public class Pieza implements Serializable {
         this.estado = estado;
     }
 
+    public Pieza(String nombre, int cantidad) {
+        this.nombre = nombre;
+        this.cantidad = cantidad;
+    }
+
     public Pieza(String nombre) {
         this.nombre = nombre;
     }
