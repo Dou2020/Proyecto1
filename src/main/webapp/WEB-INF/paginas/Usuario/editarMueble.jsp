@@ -40,9 +40,10 @@
                                             <c:forEach var="pp" items="${piezass}">
                                                 <% contador+=1;%> 
                                                 
-                                                <tr>
-                                                    <td><input name="pieza<%=contador%>" value="${pp.nombre}" aria-label="readonly input example" readonly></td>
-                                                    <td> <input name="numero<%=contador%>" value="${pp.cantidad}" aria-label="readonly input example" readonly></td>
+                                                <tr id="<%=contador%>">
+                                                    <td><input class="piezass<%=contador%>" name="pieza<%=contador%>" value="${pp.nombre}" aria-label="readonly input example" readonly></td>
+                                                    <td> <input class="piezass<%=contador%>" name="numero<%=contador%>" value="${pp.cantidad}" aria-label="readonly input example" readonly></td>
+                                                    <td><a class="btn btn-danger" onclick="" ><i class="fas fa-times-circle" aria-hidden="true" onclick="eliminarPieza('<%=contador%>')"></i> Eliminar</a></td>
                                                 </tr>
                                             </c:forEach>
                                             <% contador = 0; %>

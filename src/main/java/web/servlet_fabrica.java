@@ -1,38 +1,45 @@
-
 package web;
 
+import datos.CrearMuebleDAO;
 import datos.FabricaDAO;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import datos.Utilidades;
+import domain.Mueble;
 import domain.Pieza;
 import java.util.List;
 import web.fabrica.interaccionPieza;
 
 @WebServlet("/servlet-Fabrica")
 public class servlet_fabrica extends HttpServlet {
+
     private static boolean estado = false;
     Utilidades util = new Utilidades();
     private FabricaDAO usu = new FabricaDAO();
+    CrearMuebleDAO cm = new CrearMuebleDAO();
     interaccionPieza inter = new interaccionPieza();
-    
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession sesion = request.getSession();
         String keys = (String) sesion.getAttribute("keys");
-        
-        if (keys != null && keys.equals("2222"))
+
+        if (keys != null && keys.equals("2222")) {
             estado = true;
-        
-        System.out.println(keys+" "+estado);
+        }
+
+        System.out.println(keys + " " + estado);
         if (estado) {
             String accion = (String) request.getParameter("accion");
             if (accion != null) {
-                switch(accion){
+                switch (accion) {
+                    case "RegistrarEnMueble":
+                        registrarEnMueble(request, response);
+                        break;
                     case "salir":
-                        estado = util.accionDefault(request,response);
+                        estado = util.accionDefault(request, response);
                         break;
                     case "editar":
                         this.pestanaEditarPieza(request, response);
@@ -41,67 +48,81 @@ public class servlet_fabrica extends HttpServlet {
                         this.eliminarPieza(request, response);
                         break;
                     case "ordenar":
-                        accionDefaul(request,response,true);
+                        accionDefaul(request, response, true);
                         break;
                     default:
-                        accionDefaul(request,response,true);
+                        accionDefaul(request, response, true);
                         break;
                 }
-            }else{
-                accionDefaul(request,response,true);
+            } else {
+                accionDefaul(request, response, true);
             }
-        }else{
-            estado = util.accionDefault(request,response);
+        } else {
+            estado = util.accionDefault(request, response);
         }
     }
-        
-    private void accionDefaul(HttpServletRequest request, HttpServletResponse response, boolean esta) throws IOException, ServletException{
+
+    private void accionDefaul(HttpServletRequest request, HttpServletResponse response, boolean esta) throws IOException, ServletException {
         List<Pieza> pieza = usu.listaPrecio();
         List<Pieza> piezas = usu.listaPieza();
-        inter.contarPieza(piezas,pieza);
+        inter.contarPieza(piezas, pieza);
         String orden = request.getParameter("forma");
         if (orden != null) {
             if (orden.equals("1")) {
-               inter.ordenarPieza(piezas,true);
+                inter.ordenarPieza(piezas, true);
             }
             if (orden.equals("2")) {
-                inter.ordenarPieza(piezas,false);
+                inter.ordenarPieza(piezas, false);
             }
         }
-        System.out.println("1.piezas= "+pieza);
-        System.out.println("2. piezas= "+piezas);
+        System.out.println("1.piezas= " + pieza);
+        System.out.println("2. piezas= " + piezas);
         HttpSession sesion = request.getSession();
         sesion.setAttribute("piezas", pieza);
         sesion.setAttribute("cantidadPieza", piezas);
         if (esta) {
-            System.out.println("ingreso a fabrica "+ esta);
+            System.out.println("ingreso a fabrica " + esta);
             response.sendRedirect("fabrica.jsp");
         }
         System.out.println("ingreso aqui accionDefaul");
     }
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accion = (String) request.getParameter("accion");
         boolean esta = false;
         if (accion != null && estado) {
-            switch(accion){
-                case"buscar":
+            switch (accion) {
+                case "buscar":
                     break;
                 case "ingresar":
-                    this.ingresarPieza(request,response,esta);
+                    this.ingresarPieza(request, response, esta);
                     break;
                 case "modificar":
                     this.editarPieza(request, response);
                     break;
                 default:
-                    estado = util.accionDefault(request,response);
+                    estado = util.accionDefault(request, response);
                     break;
             }
-        }else{
-            estado = util.accionDefault(request,response);
+        } else {
+            estado = util.accionDefault(request, response);
         }
     }
-    private void editarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+    private void actualizarEstadoEnMueble(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        
+    }
+    private void registrarEnMueble(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        List<Mueble> muebles = cm.listaMueble();
+        List<Pieza> piezas = cm.listaEnMueble("");
+        session.setAttribute("Muebles", muebles);
+        session.setAttribute("piezas",piezas);
+        String url = "/WEB-INF/paginas/Fabrica/Mueble/RegistrarEnsamble.jsp";
+        request.getRequestDispatcher(url).forward(request, response);
+    }
+
+    private void editarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idPieza = request.getParameter("idPieza");
         String nombre = request.getParameter("nombre");
         String costo = request.getParameter("saldo");
@@ -111,31 +132,33 @@ public class servlet_fabrica extends HttpServlet {
                 int id = Integer.parseInt(idPieza);
                 if (usu.encontrarPieza(nombre) == null) {
                     usu.insertarPieza(nombre);
-                }else{
+                } else {
                     nombre = usu.encontrarPieza(nombre);
                 }
-                Pieza pieza = new Pieza(nombre,cost,id);
+                Pieza pieza = new Pieza(nombre, cost, id);
                 System.out.println(pieza);
                 int rows = usu.modificarPrecio(pieza);
-                this.accionDefaul(request, response,false);
-                util.alerta(request, response,"Se Modifico la pieza "+rows+" "+pieza.getNombre(),"fabrica.jsp?opcion=2");
+                this.accionDefaul(request, response, false);
+                util.alerta(request, response, "Se Modifico la pieza " + rows + " " + pieza.getNombre(), "fabrica.jsp?opcion=2");
             }
         }
     }
-    private void eliminarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-            String idPieza = request.getParameter("idPieza");
-            if (evaluar(idPieza)) {
-                if (isNumeric(idPieza)) {
-                    int id = Integer.parseInt(idPieza);
-                    int rows = usu.eliminarPrecio(id);
-                    this.accionDefaul(request, response,false);
-                    util.alerta(request, response,"Se elimino la pieza con id "+id,"fabrica.jsp?opcion=2");
-                }
-            }else{
-                util.alerta(request, response,"no se ingreso el id correctamente", "fabrica.jsp?opcion=2");
+
+    private void eliminarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String idPieza = request.getParameter("idPieza");
+        if (evaluar(idPieza)) {
+            if (isNumeric(idPieza)) {
+                int id = Integer.parseInt(idPieza);
+                int rows = usu.eliminarPrecio(id);
+                this.accionDefaul(request, response, false);
+                util.alerta(request, response, "Se elimino la pieza con id " + id, "fabrica.jsp?opcion=2");
             }
+        } else {
+            util.alerta(request, response, "no se ingreso el id correctamente", "fabrica.jsp?opcion=2");
+        }
     }
-    private void pestanaEditarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+
+    private void pestanaEditarPieza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idPieza = request.getParameter("idPieza");
         if (isNumeric(idPieza)) {
             int id = Integer.parseInt(idPieza);
@@ -144,59 +167,62 @@ public class servlet_fabrica extends HttpServlet {
             session.setAttribute("pieza", pieza);
             String url = "/WEB-INF/paginas/Fabrica/editarPieza.jsp";
             request.getRequestDispatcher(url).forward(request, response);
-        }else{
-            this.accionDefaul(request, response,true);
+        } else {
+            this.accionDefaul(request, response, true);
         }
-        
+
     }
-    private void ingresarPieza(HttpServletRequest request, HttpServletResponse response,boolean esta) throws ServletException, IOException{
+
+    private void ingresarPieza(HttpServletRequest request, HttpServletResponse response, boolean esta) throws ServletException, IOException {
         String pieza = request.getParameter("pieza");
         String precio = request.getParameter("precio");
         String tipo = request.getParameter("cantidad");
-        
+
         if (evaluar(pieza) && evaluar(precio) && evaluar(tipo)) {
-                if (isNumeric(tipo)) {
-                    int tip = Integer.parseInt(tipo);
-                    if (0<tip) {
-                        boolean es = false;
-                        for (int i = 0; i < tip; i++) {
-                            if(usu.encontrarPieza(pieza) == null) {
-                                usu.insertarPieza(pieza);
-                            }else{
-                                pieza = usu.encontrarPieza(pieza);
-                            }
-                            if (isNumeric(precio)) {
-                                double precioo = Double.parseDouble(precio);
-                                Pieza piez = new Pieza(pieza,precioo);
-                                usu.insertarPrecio(piez);
-                                es = true;
-                            }else{
-                                util.alerta(request, response, "Precio incorrecto no es un numero", "fabrica.jsp");
-                            }
-                                
+            if (isNumeric(tipo)) {
+                int tip = Integer.parseInt(tipo);
+                if (0 < tip) {
+                    boolean es = false;
+                    for (int i = 0; i < tip; i++) {
+                        if (usu.encontrarPieza(pieza) == null) {
+                            usu.insertarPieza(pieza);
+                        } else {
+                            pieza = usu.encontrarPieza(pieza);
                         }
-                        if (es) {
-                            System.out.println("Ingreso la pieza "+pieza);
-                            accionDefaul(request,response, esta);
-                            util.alerta(request, response, "Ingreso la pieza"+pieza+" "+tipo, "fabrica.jsp");
-                            
+                        if (isNumeric(precio)) {
+                            double precioo = Double.parseDouble(precio);
+                            Pieza piez = new Pieza(pieza, precioo);
+                            usu.insertarPrecio(piez);
+                            es = true;
+                        } else {
+                            util.alerta(request, response, "Precio incorrecto no es un numero", "fabrica.jsp");
                         }
-                    }else{
-                        System.out.println("no se ingreso cantidad menor a 0");
-                        util.alerta(request, response, "No se ingreso cantidad menor a 0", "fabrica.jsp");
+
                     }
+                    if (es) {
+                        System.out.println("Ingreso la pieza " + pieza);
+                        accionDefaul(request, response, esta);
+                        util.alerta(request, response, "Ingreso la pieza" + pieza + " " + tipo, "fabrica.jsp");
+
+                    }
+                } else {
+                    System.out.println("no se ingreso cantidad menor a 0");
+                    util.alerta(request, response, "No se ingreso cantidad menor a 0", "fabrica.jsp");
                 }
-        }else{
+            }
+        } else {
             System.out.println("no se ingreso");
             util.alerta(request, response, "No se ingreso el usuario", "fabrica.jsp");
         }
-        accionDefaul(request,response,esta);
+        accionDefaul(request, response, esta);
     }
+
     public static boolean isNumeric(String str) {//expresiones regulares
         return str != null && str.matches("[-+]?\\d*\\.?\\d+");
     }
-    private boolean evaluar(String palabra){
-        
+
+    private boolean evaluar(String palabra) {
+
         if (palabra != null && !palabra.equals("")) {
             return true;
         }

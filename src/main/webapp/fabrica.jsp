@@ -26,8 +26,8 @@
         
                 <%break;
             case "3":%>
-        
-        
+            <jsp:include page="/WEB-INF/paginas/Fabrica/Mueble/botonEnMueble.jsp"/>
+            <jsp:include page="/WEB-INF/paginas/Fabrica/Mueble/ListarEnMuele.jsp"/>
                 <%break;
             default:%>
             <jsp:include page="WEB-INF/paginas/Fabrica/botonesOrdenar.jsp"/>

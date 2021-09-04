@@ -92,7 +92,10 @@ function insertarPieza() {
         }  
     }
 }
-
+function eliminarPieza(idEliminar){
+    $('.piezass'+idEliminar).val("");
+    $('#'+idEliminar).hide();
+}
 function openDetailsModal(context) {
     $.ajax({
         type: 'GET',
