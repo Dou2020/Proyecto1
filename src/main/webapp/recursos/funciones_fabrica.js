@@ -18,6 +18,37 @@ function insertarPieza() {
         }  
     }
 }
+function cambiarPiezas(Mueble,context){
+    var mueble = $(Mueble).val();
+    alert(mueble);
+    $.ajax({
+        type: 'GET',
+        url: context + "/servlet-Fabrica?accion=enviarParametro&idMueble="+mueble,
+        success: function (result) {
+            $('#Parametros-Mueble').html(result);
+        }
+    }).fail(function ( jqXHR, textStatus, errorThrown) {
+        alert("error");
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+function listarPrecios(context,pieza){
+    $.ajax({
+        type: 'GET',
+        url: context + "/servlet-Fabrica?accion=listarPrecios&idPieza="+pieza,
+        success: function (result) {
+            $('#preciosPieza').html(result);
+            
+        }
+    }).fail(function ( jqXHR, textStatus, errorThrown) {
+        alert("error");
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 function eliminarPieza(columna){
     
 }

@@ -35,6 +35,12 @@ public class servlet_fabrica extends HttpServlet {
             String accion = (String) request.getParameter("accion");
             if (accion != null) {
                 switch (accion) {
+                    case "listarPrecios":
+                        listarPrecios(request,response);
+                        break;
+                    case "enviarParametro":
+                        this.enviarParametro(request, response);
+                        break;
                     case "RegistrarEnMueble":
                         registrarEnMueble(request, response);
                         break;
@@ -109,15 +115,31 @@ public class servlet_fabrica extends HttpServlet {
             estado = util.accionDefault(request, response);
         }
     }
+    private void listarPrecios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String nombrePieza = request.getParameter("idPieza");
+        List<Pieza> precios = usu.listaPrecioCosto(nombrePieza);
+        HttpSession session = request.getSession();
+        session.setAttribute("precioss", precios);
+        String url = "/WEB-INF/paginas/Fabrica/Mueble/listarPrecios.jsp";
+        request.getRequestDispatcher(url).forward(request, response);
+    }
+    private void enviarParametro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+    String nombre = request.getParameter("idMueble");
+    List<Pieza> piezas= cm.listaEnMueble(nombre);
+    Mueble mueble = cm.seleccionarMueble(nombre);
+    HttpSession session = request.getSession();
+    session.setAttribute("piezasss",piezas);
+    session.setAttribute("m",mueble);
+    String url = "/WEB-INF/paginas/Fabrica/Mueble/interaccionMueble.jsp";
+        request.getRequestDispatcher(url).forward(request, response);
+    }
     private void actualizarEstadoEnMueble(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         
     }
     private void registrarEnMueble(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         List<Mueble> muebles = cm.listaMueble();
-        List<Pieza> piezas = cm.listaEnMueble("");
         session.setAttribute("Muebles", muebles);
-        session.setAttribute("piezas",piezas);
         String url = "/WEB-INF/paginas/Fabrica/Mueble/RegistrarEnsamble.jsp";
         request.getRequestDispatcher(url).forward(request, response);
     }
