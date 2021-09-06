@@ -13,7 +13,7 @@
     </head>
     <body>
         <jsp:include page="/WEB-INF/paginas/Fabrica/cabecero.jsp"/>
-        <form onload="CrearListas(${Muebles},${piezas})">
+        <form>
             <section id="details">
                 <div class="container">
                     <div class="row">
@@ -46,6 +46,19 @@
                                         <label>costo:</label>
                                         <input type="number" class="form-control" id="costoTotal" name="cantidad" step="any">
 
+                                    </div>
+                                    <div id="modalParaListarPrecio" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Seleccionar Precio</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body" id="modal-content-EnMueble">
+                                                    <p>Contenido para inspeccionar.</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     </br>
                                     <div class="form-group">

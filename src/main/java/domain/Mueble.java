@@ -5,11 +5,13 @@
  */
 package domain;
 
+import java.io.Serializable;
+
 /**
  *
  * @author douglas2021
  */
-public class Mueble {
+public class Mueble implements Serializable{
     private String nombre;
     private double precio;
 

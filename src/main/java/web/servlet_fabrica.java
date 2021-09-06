@@ -117,9 +117,13 @@ public class servlet_fabrica extends HttpServlet {
     }
     private void listarPrecios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         String nombrePieza = request.getParameter("idPieza");
+        String columna = request.getParameter("columna");
         List<Pieza> precios = usu.listaPrecioCosto(nombrePieza);
+        System.out.println(precios);
         HttpSession session = request.getSession();
         session.setAttribute("precioss", precios);
+        session.setAttribute("idPieza",nombrePieza);
+        session.setAttribute("columna",columna);
         String url = "/WEB-INF/paginas/Fabrica/Mueble/listarPrecios.jsp";
         request.getRequestDispatcher(url).forward(request, response);
     }
