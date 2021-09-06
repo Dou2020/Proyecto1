@@ -36,11 +36,12 @@ public class LecturaArchivo extends HttpServlet {
                 line = in.readLine();
                 total++;
             }
-            System.out.println("------------------"+total+"-----------------------------");
+            System.out.println("------------------<" + total + ">-----------------------------");
             //String filePath = PATH + "/" + "archivo";
             //filePart.write(filePath);
             //request.getRequestDispatcher("result.jsp?path=" + filePath).forward(request, response);
         } catch (Exception ex) {
+            System.out.println("error " + ex);
             // manejo de error
         }
         /*
@@ -61,19 +62,55 @@ public class LecturaArchivo extends HttpServlet {
         String cadena = new String(total, java.nio.charset.StandardCharsets.UTF_8);
         System.out.println(cadena);
          */
-        System.out.println("-----------------------------------piezas ingresadas--------------------------------");
-        System.out.println(piezas);
-        System.out.println(muebles);
-        System.out.println(usuarios);
-        System.out.println(clientes);
-        System.out.println("-------------------------------------------------------------------------------------");
-        System.out.println();
+       insertarBaseDatos();
+        HttpSession session = request.getSession();
+        session.setAttribute("piezasR", piezas);
+        session.setAttribute("mueblesR", muebles);
+        session.setAttribute("usuariosR", usuarios);
+        session.setAttribute("clientesR", clientes);
+        session.setAttribute("error", error);
+        response.sendRedirect("financiero.jsp");
+
     }
     private List<Cliente> clientes = new ArrayList<>();
     private List<Mueble> muebles = new ArrayList<>();
     private List<Pieza> piezas = new ArrayList<>();
     private List<Usuario> usuarios = new ArrayList<>();
-
+    private List<EnsamblePieza> enPieza = new ArrayList<>();
+    private List<EnsambleMueble> enMueble = new ArrayList<>();
+    private List<String> error = new ArrayList<>();
+    private void insertarBaseDatos(){
+        for (Cliente cliente: clientes) {
+            if (!this.ingresarCliente(cliente)) {
+                clientes.remove(cliente);
+            }
+        }
+        for(Mueble mueble: muebles){
+            if (!this.ingresarMueble(mueble)) {
+                clientes.remove(mueble);
+            }
+        }
+        for (Pieza pieza: piezas) {
+            if (!this.ingresarPieza(pieza)) {
+                piezas.remove(pieza);
+            }
+        }
+        for (Usuario usuario: usuarios) {
+            if (!this.ingresarUsuario(usuario)) {
+                usuarios.remove(usuario);
+            }
+        }
+        for (EnsamblePieza ensambleP: enPieza) {
+            if (!this.ingresarEnPieza(ensambleP)) {
+                enPieza.remove(ensambleP);
+            }
+        }
+        for(EnsambleMueble ensambleMueble: enMueble){
+            if (!this.ingresarEnMueble(ensambleMueble)) {
+                enMueble.remove(ensambleMueble);
+            }
+        }
+    }
     private void lectura(String cadena) {
         boolean estado = true;
         //expresiones regulares
@@ -81,7 +118,7 @@ public class LecturaArchivo extends HttpServlet {
         Pattern ENMUEBLE = Pattern.compile("ENSAMBLAR_MUEBLE\\([\"|“|”]([A-Za-z]+\\s*)+[\"|“|”]\\s?,\\s?[\"|“|”]([A-Za-z]+\\s*)+[\"|“|”]\\s?,\\s?[\"|“|”]\\d{2,2}/\\d{2,2}/\\d{4,4}[\"|“|”]\\)\\s?$");
         Pattern MUEBLE = Pattern.compile("MUEBLE\\([\"|“|”]([A-Za-z]+\\s?)+[\"|“|”],\\s?\\d*\\.?\\d+\\)\\s?$");
         Pattern PIEZA = Pattern.compile("PIEZA\\([\"|“|”]([A-Za-z]+\\s?)+[\"|“|”],\\d*\\.?\\d+\\)\\s?$");
-        Pattern USUARIO = Pattern.compile("USUARIO\\([\"|“|”](\\w+\\s?)+[\"|“|”],[\"|“|”]\\w{6}[\"|“|”],\\d\\)\\s?$");
+        Pattern USUARIO = Pattern.compile("USUARIO\\([\"|“|”](\\w+\\s?)+[\"|“|”]\\s?,\\s?[\"|“|”]\\w{6,}[\"|“|”],\\d\\)\\s?$");
         Pattern CLIENTE = Pattern.compile("CLIENTE\\([\"|“|”]([A-Za-z]+\\s?)+[\"|“|”]\\s?,\\s?[\"|“|”]\\w+[\"|“|”]\\s?,\\s?[\"|“|”]\\w+\\s\\d+\\-\\d+\\szona\\s\\d[\"|“|”]\\s?,\\s?[\"|“|”][A-Za-z]+[\"|“|”]\\s?,\\s?[\"|“|”][A-Za-z]+[\"|“|”]\\s?\\)\\s?$");
         Pattern CLIENTE2 = Pattern.compile("CLIENTE\\([\"|“|”]([A-Za-z]+\\s?)+[\"|“|”]\\s?,\\s?[\"|“|”]\\w+[\"|“|”]\\s?,\\s?[\"|“|”][A-Za-z]+[\"|“|”]\\)\\s?$");
         //agrego las expreciones regulares al metodo que retornara un boolean
@@ -120,14 +157,93 @@ public class LecturaArchivo extends HttpServlet {
         }
         if (enMueble.matches()) {
             System.out.println(cadena);
+            enMueble(partes(cadena));
             estado = false;
         }
         if (enPieza.matches()) {
             System.out.println(cadena);
+            enPieza(partes(cadena));
             estado = false;
         }
         if (estado) {
+            error.add(cadena);
             System.out.println("No se acepto la cadena:  " + cadena);
+        }
+    }
+    FabricaDAO f = new FabricaDAO();
+    CrearMuebleDAO cm = new CrearMuebleDAO();
+    UsuarioDAO usu = new UsuarioDAO();
+    ClienteDAO cl = new ClienteDAO();
+
+    private boolean ingresarMueble(Mueble mueble) {
+        if (cm.encontrarMueble(mueble.getNombre())) {
+            cm.InsertarMueble(mueble);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean ingresarPieza(Pieza pieza) {
+        if (f.encontrarPieza(pieza.getNombre()) == null) {
+            f.insertarPieza(pieza.getNombre());
+            String nombre = f.encontrarPieza(pieza.getNombre());
+            Pieza p = new Pieza(nombre, pieza.getCosto());
+            f.insertarPrecio(p);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean ingresarUsuario(Usuario usuario) {
+        if (!usu.encontrar(usuario)) {
+            usu.Insertar(usuario);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean ingresarCliente(Cliente cliente) {
+        if (!cl.encontrar(cliente)) {
+            if (cliente.getDepartamento() != null) {
+                cl.insertarCliente1(cliente);
+            } else {
+                cl.insertarCliente2(cliente);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean ingresarEnPieza(EnsamblePieza pieza) {
+        if (cm.encontrarMueble(pieza.getMueble().getNombre())) {
+            if (f.encontrarPieza(pieza.getPieza().getNombre()) == null) {
+                cm.InsertarEnPieza(pieza.getPieza(), pieza.getMueble());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean ingresarEnMueble(EnsambleMueble mueble) {
+        if (usu.encontrar(mueble.getUsuario())) {
+            if (cm.encontrarMueble(mueble.getMueble())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void enPieza(List<String> obj) {
+        if (3 == obj.size()) {
+            int cantidad = Integer.parseInt(obj.get(2));
+            enPieza.add(new EnsamblePieza(new Mueble(obj.get(0)), new Pieza(obj.get(1), cantidad)));
+        }
+
+    }
+
+    private void enMueble(List< String> obj) {
+        if (3 == obj.size()) {
+            enMueble.add(new EnsambleMueble(new Usuario(obj.get(1)), obj.get(0), obj.get(2)));
         }
     }
 
@@ -166,8 +282,13 @@ public class LecturaArchivo extends HttpServlet {
         String b[] = a[1].split("\\)");
         String c[] = b[0].split(",");
         List<String> datos = new ArrayList<>();
+        for (int i = 0; i < c.length; i++) {
+            System.out.print(c[i]);
+        }
+        System.out.println();
         for (String part : c) {
             String d = evaluar(part);
+            System.out.println(d);
             if (part != null) {
                 datos.add(d);
             } else {
@@ -180,14 +301,16 @@ public class LecturaArchivo extends HttpServlet {
 
     public String evaluar(String part) {
         String d[] = part.split("\"");
-        if (2 < d.length) {
+        if (2 <= d.length) {
             return d[1];
         }
         d = part.split("”");
         if (3 == d.length) {
+
             return d[1];
         }
         if (2 == d.length) {
+            System.out.println("evaluar letra cadena 1 " + d[0] + " largo de cadena " + d.length);
             String e[] = d[0].split("“");
             if (e.length == 2) {
                 return e[1];
@@ -202,8 +325,26 @@ public class LecturaArchivo extends HttpServlet {
             return d[1];
 
         }
-        if (isNumeric(part)) {
-            return part;
+        if (2 == d.length) {
+            System.out.println("evaluar letra cadena 1 " + d[0] + " largo de cadena " + d.length);
+            String e[] = d[0].split("”");
+            if (e.length == 2) {
+                return e[1];
+            }
+            if (e.length == 1) {
+                String f[] = d[1].split("”");
+                return f[0];
+            }
+        }
+        String cd = "";
+        for (int i = 0; i < part.length(); i++) {
+            String parte = part.substring(i, i + 1);
+            if (!parte.equals(" ")) {
+                cd += parte;
+            }
+        }
+        if (isNumeric(cd)) {
+            return cd;
         }
         return null;
     }

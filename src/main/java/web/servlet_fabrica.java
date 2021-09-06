@@ -107,6 +107,9 @@ public class servlet_fabrica extends HttpServlet {
                 case "modificar":
                     this.editarPieza(request, response);
                     break;
+                case "registrarEnsamble":
+                     this.EnsambleMueble(request, response);
+                    break;
                 default:
                     estado = util.accionDefault(request, response);
                     break;
@@ -114,6 +117,11 @@ public class servlet_fabrica extends HttpServlet {
         } else {
             estado = util.accionDefault(request, response);
         }
+    }
+    private void EnsambleMueble(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String total =request.getParameter("cantidad");
+        String mueble = request.getParameter("muebleSelect");
+        
     }
     private void listarPrecios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         String nombrePieza = request.getParameter("idPieza");

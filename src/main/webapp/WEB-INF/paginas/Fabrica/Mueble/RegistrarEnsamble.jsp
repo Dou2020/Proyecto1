@@ -13,7 +13,7 @@
     </head>
     <body>
         <jsp:include page="/WEB-INF/paginas/Fabrica/cabecero.jsp"/>
-        <form>
+        <form action="${pageContext.request.contextPath}/servlet-Fabrica?accion=registrarEnsamble" method="POST" class="was-validated">
             <section id="details">
                 <div class="container">
                     <div class="row">
@@ -24,7 +24,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <select id="muebleNueva" class="form-select form-select-lg mb-2" aria-label=".form-select-lg example" onchange="cambiarPiezas(this, '${pageContext.request.contextPath}')" >
+                                        <select name="muebleSelect" id="muebleNueva" class="form-select form-select-lg mb-2" aria-label=".form-select-lg example" onchange="cambiarPiezas(this, '${pageContext.request.contextPath}')" >
                                             <option id="listaEnMueble" selected value="">Seleccionar Mueble Ensamblar</option>  
                                             <c:forEach var="mueble" items="${Muebles}">
                                                 <option id="${mueble.nombre}" value="${mueble.nombre}">${mueble.nombre}</option> 

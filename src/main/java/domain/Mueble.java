@@ -23,6 +23,10 @@ public class Mueble implements Serializable{
         this.precio = precio;
     }
 
+    public Mueble(String nombre) {
+        this.nombre = nombre;
+    }
+    
     public String getNombre() {
         return nombre;
     }
