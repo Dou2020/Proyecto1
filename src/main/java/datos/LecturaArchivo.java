@@ -30,11 +30,13 @@ public class LecturaArchivo extends HttpServlet {
         System.out.println("-----------------lectura-------------------");
         try (BufferedReader in = new BufferedReader(new InputStreamReader(fileContent))) {
             String line = in.readLine();
+            int total = 0;
             while (line != null) {
                 lectura(line);
                 line = in.readLine();
+                total++;
             }
-            System.out.println("-----------------------------------------------");
+            System.out.println("------------------"+total+"-----------------------------");
             //String filePath = PATH + "/" + "archivo";
             //filePart.write(filePath);
             //request.getRequestDispatcher("result.jsp?path=" + filePath).forward(request, response);
